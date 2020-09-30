@@ -1,0 +1,19 @@
+FROM java:8
+
+ENV JMETER_VERSION=5.3 
+EXPOSE 109 60000 7000
+
+RUN mkdir /jmeter \
+    && cd /jmeter/ \
+    && wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz \
+    && tar -xzf apache-jmeter-${JMETER_VERSION}.tgz \
+    && rm apache-jmeter-${JMETER_VERSION}.tgz \
+    && cp -r ./apache-jmeter-${JMETER_VERSION}/* . && rm -R apache-jmeter-${JMETER_VERSION} \
+    &&  rm -Rfd /jmeter/scripts && mkdir /jmeter/scripts \
+    && cd /jmeter/bin \
+    && ./create-rmi-keystore.sh -dname  "CN=rmi, OU=MyUnitName, O=MyOrganization, L=SaoPaulo, S=SP, C=BR" -keypass changeit
+
+ENV JMETER_HOME /jmeter/
+ENV PATH $JMETER_HOME/bin:$PATH
+ENV Jclient.rmi.localport=7000 
+ENV Jserver.rmi.localport=60000

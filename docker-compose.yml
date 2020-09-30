@@ -1,0 +1,34 @@
+version: '3'
+services:
+  master:
+    build: 
+      context: .
+      dockerfile: DockerFile
+    container_name: master
+    tty: true
+    volumes: 
+      - ./teste/.:/jmeter-teste
+    working_dir: /jmeter/bin
+    expose: 
+      - '60000'
+    depends_on: 
+      - slave
+    networks:
+      - jmeter-network
+  slave:
+    build: 
+      context: .
+      dockerfile: DockerFile
+    volumes: 
+      - ./teste/.:/jmeter-teste
+    working_dir: /jmeter/bin
+    expose: 
+      - '60000'
+    entrypoint: ./jmeter-server -Jclient.rmi.localport=7000 -Jserver.rmi.localport=60000
+    deploy:
+      replicas: 4
+    networks:
+      - jmeter-network
+networks:
+  jmeter-network:
+    driver: bridge

@@ -1,0 +1,7 @@
+*.tmp
+*.jmx
+*.csv
+*.jks
+*.log
+.vs
+results
